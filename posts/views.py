@@ -20,13 +20,13 @@ class PostList(SelectRelatedMixin, generic.ListView):
     select_related = ('user', 'group')
 
 
-class userPosts(generic.ListView):
+class UserPosts(generic.ListView):
     model = models.Post
     template_name = 'posts/user_post_list.html'
 
     def get_queryset(self):
         try:
-            self.post.user = User.objects.prefetch_related('posts').get(username__iexact=self.kwargs.get('username'))
+            self.post_user = User.objects.prefetch_related('posts').get(username__iexact=self.kwargs.get('username'))
         except User.DoesNotExist:
             raise Http404
         else:
@@ -58,7 +58,7 @@ class CreatePost(LoginRequiredMixin, SelectRelatedMixin, generic.CreateView):
 
 
 class DeletePost(LoginRequiredMixin,SelectRelatedMixin, generic.DeleteView):
-    model = Post
+    model = models.Post
     select_related = ('user', 'group')
     success_url = reverse_lazy('posts:all')
 

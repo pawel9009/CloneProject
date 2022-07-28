@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 
-import misaka
 
 from groups.models import Group
 
@@ -23,13 +22,14 @@ class Post(models.Model):
         return self.message
 
     def save(self, *args, **kwargs):
-        self.message_html = misaka.html(self.message)
+        #misaka here
+        self.message_html = self.message
         super().save(*args,**kwargs)
 
     def get_absolute_url(self):
-        return reverse('post:single', kwargs={'username':self.user.username,
+        return reverse('posts:single', kwargs={'username':self.user.username,
                                               'pk':self.pk}  )
 
     class Meta:
-        ordering = '-created_at'
+        ordering = ['-created_at']
         unique_together = ['user', 'message']
